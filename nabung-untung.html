@@ -45,13 +45,75 @@ input[type=text]:focus{border-color:var(--o);box-shadow:0 0 0 4px rgba(255,106,0
 <div class="note">Rumus: nominal × rate p.a. × tenor/12. Pastikan kembali kesesuaiannya dengan ketentuan resmi program.</div>
 </section></main>
 <script>
-const n=document.getElementById('nominal'),r=document.getElementById('rate'),g=document.getElementById('gross'),t=document.getElementById('tax'),net=document.getElementById('net'),msg=document.getElementById('msg');
-const idr=new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0});
-const pct=new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
-function rate(x){if(x<100000000)return null;if(x<=500000000)return 5;if(x<=2500000000)return 5.25;if(x<=5000000000)return 5.5;if(x<=10000000000)return 5.75;return 6}
-function render(){const raw=n.value.replace(/\D/g,''),x=Number(raw||0);n.value=raw?new Intl.NumberFormat('id-ID').format(x):'';const y=rate(x);
-if(!raw||y===null){r.textContent='—';g.textContent=t.textContent=net.textContent='Rp0';msg.textContent=raw?'Minimal nominal Rp100.000.000.':'';return}
-const tenor=Number(document.querySelector('[name=tenor]:checked').value),gross=x*(y/100)*(tenor/12),tax=gross*.2;
-r.textContent=pct.format(y)+'%';g.textContent=idr.format(Math.round(gross));t.textContent=idr.format(Math.round(tax));net.textContent=idr.format(Math.round(gross-tax));msg.textContent='Simulasi berhasil dihitung.'}
-n.addEventListener('input',render);document.querySelectorAll('[name=tenor]').forEach(x=>x.addEventListener('change',render));
-</script></body></html>
+const n = document.getElementById('nominal');
+const r = document.getElementById('rate');
+const g = document.getElementById('gross');
+const t = document.getElementById('tax');
+const net = document.getElementById('net');
+const msg = document.getElementById('msg');
+
+const idr = new Intl.NumberFormat('id-ID', {
+    style: 'currency',
+    currency: 'IDR',
+    maximumFractionDigits: 0
+});
+
+const pct = new Intl.NumberFormat('id-ID', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+});
+
+function rate(x) {
+    if (x < 100000000) return null;
+    if (x <= 500000000) return 5;
+    if (x <= 2500000000) return 5.25;
+    if (x <= 5000000000) return 5.5;
+    if (x <= 10000000000) return 5.75;
+    return 6;
+}
+
+function render() {
+    const raw = n.value.replace(/\D/g, '');
+    const x = Number(raw || 0);
+
+    n.value = raw
+        ? new Intl.NumberFormat('id-ID').format(x)
+        : '';
+
+    const y = rate(x);
+
+    if (!raw || y === null) {
+        r.textContent = '—';
+        g.textContent = 'Rp0';
+        t.textContent = 'Rp0';
+        net.textContent = 'Rp0';
+        msg.textContent = raw
+            ? 'Minimal nominal Rp100.000.000.'
+            : '';
+        return;
+    }
+
+    const tenor = Number(
+        document.querySelector('[name=tenor]:checked').value
+    );
+
+    const jumlahHari = tenor === 3 ? 90 : 180;
+
+    const gross = x * (y / 100) * (jumlahHari / 365);
+    const tax = gross * 0.2;
+    const netCashback = gross - tax;
+
+    r.textContent = pct.format(y) + '%';
+    g.textContent = idr.format(Math.round(gross));
+    t.textContent = idr.format(Math.round(tax));
+    net.textContent = idr.format(Math.round(netCashback));
+    msg.textContent = 'Simulasi berhasil dihitung.';
+}
+
+n.addEventListener('input', render);
+
+document
+    .querySelectorAll('[name=tenor]')
+    .forEach(item => item.addEventListener('change', render));
+</script>
+</body></html>
