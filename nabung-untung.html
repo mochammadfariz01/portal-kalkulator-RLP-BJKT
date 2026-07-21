@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kalkulator Nabung Untung</title>
+<style>
+:root{--o:#ff6a00;--n:#16235f;--m:#687386;--l:#e5e9f2;--b:#f5f7fb;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+*{box-sizing:border-box}body{margin:0;background:var(--b);color:#202637}.wrap{width:min(860px,calc(100% - 28px));margin:28px auto}
+.back{display:inline-block;margin-bottom:14px;color:var(--n);font-weight:800;text-decoration:none}
+.hero{padding:26px;background:linear-gradient(135deg,var(--o),#ff9a32);color:#fff;border-radius:20px 20px 0 0}
+.hero h1{margin:0 0 8px}.hero p{margin:0;line-height:1.5}
+.card{background:#fff;border-radius:0 0 20px 20px;box-shadow:0 15px 40px rgba(25,37,80,.1);padding:24px}
+.grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.panel{border:1px solid var(--l);border-radius:16px;padding:18px}
+h2{font-size:18px;color:var(--n);margin:0 0 16px}label{font-size:13px;font-weight:800;display:block;margin-bottom:8px}
+.field{position:relative}.prefix{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-weight:800;color:var(--m)}
+input[type=text]{width:100%;height:50px;border:1px solid #cfd6e4;border-radius:11px;padding:0 14px 0 43px;font-size:17px;outline:none}
+input[type=text]:focus{border-color:var(--o);box-shadow:0 0 0 4px rgba(255,106,0,.1)}
+.hint,.msg{font-size:12px;color:var(--m);margin-top:7px}.msg{min-height:18px;font-weight:700}.tenor{margin-top:20px}.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice input{position:absolute;opacity:0}.choice span{height:46px;border:1px solid #cfd6e4;border-radius:11px;display:grid;place-items:center;cursor:pointer;font-weight:800}
+.choice input:checked+span{border-color:var(--o);background:#fff3e8;color:#d95700}
+.results{display:grid;gap:10px}.result{padding:14px;border:1px solid var(--l);border-radius:13px;background:#f9fafb}.result small{display:block;color:var(--m);margin-bottom:4px}.result strong{font-size:22px;color:var(--n)}
+.note{margin-top:18px;font-size:12px;color:var(--m);line-height:1.5}
+@media(max-width:650px){.grid{grid-template-columns:1fr}.wrap{margin:14px auto}}
+</style>
+</head>
+<body><main class="wrap">
+<a class="back" href="index.html">← Kembali ke daftar kalkulator</a>
+<section class="hero"><h1>Kalkulator Nabung Untung</h1><p>Masukkan nominal dan pilih tenor. Hasil simulasi muncul otomatis.</p></section>
+<section class="card">
+<div class="grid">
+<div class="panel"><h2>Data Penempatan</h2>
+<label for="nominal">Nominal Penempatan</label>
+<div class="field"><span class="prefix">Rp</span><input id="nominal" type="text" inputmode="numeric" placeholder="100.000.000"></div>
+<div class="hint">Minimal penempatan Rp100.000.000.</div>
+<div class="tenor"><label>Tenor</label><div class="choices">
+<label class="choice"><input type="radio" name="tenor" value="3" checked><span>3 Bulan</span></label>
+<label class="choice"><input type="radio" name="tenor" value="6"><span>6 Bulan</span></label>
+</div></div><div id="msg" class="msg"></div></div>
+<div class="panel"><h2>Hasil Simulasi</h2><div class="results">
+<div class="result"><small>Rate (p.a.)</small><strong id="rate">—</strong></div>
+<div class="result"><small>Gross Cashback</small><strong id="gross">Rp0</strong></div>
+<div class="result"><small>Pajak (20%)</small><strong id="tax">Rp0</strong></div>
+<div class="result"><small>Net Cashback</small><strong id="net">Rp0</strong></div>
+</div></div></div>
+<div class="note">Rumus: nominal × rate p.a. × tenor/12. Pastikan kembali kesesuaiannya dengan ketentuan resmi program.</div>
+</section></main>
+<script>
+const n=document.getElementById('nominal'),r=document.getElementById('rate'),g=document.getElementById('gross'),t=document.getElementById('tax'),net=document.getElementById('net'),msg=document.getElementById('msg');
+const idr=new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0});
+const pct=new Intl.NumberFormat('id-ID',{minimumFractionDigits:2,maximumFractionDigits:2});
+function rate(x){if(x<100000000)return null;if(x<=500000000)return 5;if(x<=2500000000)return 5.25;if(x<=5000000000)return 5.5;if(x<=10000000000)return 5.75;return 6}
+function render(){const raw=n.value.replace(/\D/g,''),x=Number(raw||0);n.value=raw?new Intl.NumberFormat('id-ID').format(x):'';const y=rate(x);
+if(!raw||y===null){r.textContent='—';g.textContent=t.textContent=net.textContent='Rp0';msg.textContent=raw?'Minimal nominal Rp100.000.000.':'';return}
+const tenor=Number(document.querySelector('[name=tenor]:checked').value),gross=x*(y/100)*(tenor/12),tax=gross*.2;
+r.textContent=pct.format(y)+'%';g.textContent=idr.format(Math.round(gross));t.textContent=idr.format(Math.round(tax));net.textContent=idr.format(Math.round(gross-tax));msg.textContent='Simulasi berhasil dihitung.'}
+n.addEventListener('input',render);document.querySelectorAll('[name=tenor]').forEach(x=>x.addEventListener('change',render));
+</script></body></html>

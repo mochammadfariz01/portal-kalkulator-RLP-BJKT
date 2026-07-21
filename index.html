@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#ff6a00">
+  <title>Portal Kalkulator Program</title>
+  <style>
+    :root{
+      --orange:#ff6a00;--orange2:#ff9a32;--navy:#16235f;--ink:#202637;
+      --muted:#687386;--line:#e5e9f2;--bg:#f5f7fb;--white:#fff;
+      font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink)}
+    .wrap{width:min(1120px,calc(100% - 28px));margin:0 auto}
+    header{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;padding:34px 0 62px}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:900}
+    .mark{width:40px;height:40px;border-radius:12px;background:#fff;color:var(--orange);display:grid;place-items:center;font-size:22px}
+    h1{font-size:clamp(30px,5vw,48px);margin:26px 0 8px;line-height:1.05}
+    header p{margin:0;max-width:700px;line-height:1.6;color:rgba(255,255,255,.92)}
+    main{margin-top:-34px;padding-bottom:42px}
+    .toolbar{background:#fff;border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 14px 40px rgba(25,37,80,.1)}
+    input{width:100%;height:48px;border:1px solid #cfd6e4;border-radius:12px;padding:0 15px;font-size:15px;outline:none}
+    input:focus{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,106,0,.11)}
+    .section-title{display:flex;justify-content:space-between;align-items:end;margin:28px 2px 14px}
+    .section-title h2{margin:0;color:var(--navy)} .section-title small{color:var(--muted)}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 10px 28px rgba(25,37,80,.06);display:flex;flex-direction:column;min-height:230px}
+    .icon{width:46px;height:46px;border-radius:14px;background:#fff3e8;display:grid;place-items:center;font-size:23px}
+    .badge{align-self:flex-start;margin-top:16px;font-size:11px;font-weight:800;border-radius:999px;padding:6px 9px;background:#eaf8f1;color:#08754a}
+    .badge.soon{background:#f2f4f7;color:#667085}
+    .card h3{margin:12px 0 8px;color:var(--navy)} .card p{margin:0;color:var(--muted);line-height:1.5;font-size:14px}
+    .card a,.disabled{margin-top:auto;display:flex;justify-content:center;align-items:center;height:44px;border-radius:11px;text-decoration:none;font-weight:800}
+    .card a{background:var(--orange);color:#fff}.card a:hover{background:#e95f00}
+    .disabled{background:#eef1f6;color:#8a94a6;cursor:not-allowed}
+    footer{text-align:center;color:var(--muted);font-size:12px;padding:24px}
+    @media(max-width:850px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:560px){header{padding-top:24px}.grid{grid-template-columns:1fr}.section-title{align-items:start;flex-direction:column;gap:4px}}
+  </style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><div class="mark">K</div> Portal Kalkulator Program</div>
+    <h1>Pilih kalkulator yang dibutuhkan</h1>
+    <p>Satu portal untuk simulasi benefit program tabungan, giro, deposito, dan program promosi lainnya.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="toolbar">
+    <input id="search" type="search" placeholder="Cari kalkulator, misalnya Nabung Untung atau Giro Prestige">
+  </div>
+
+  <div class="section-title">
+    <h2>Daftar Kalkulator</h2>
+    <small id="count">3 kalkulator</small>
+  </div>
+
+  <section class="grid" id="grid">
+    <article class="card" data-name="kalkulator nabung untung tabungan cashback">
+      <div class="icon">💰</div>
+      <span class="badge">Tersedia</span>
+      <h3>Kalkulator Nabung Untung</h3>
+      <p>Simulasi rate, gross cashback, pajak, dan net cashback berdasarkan nominal dan tenor.</p>
+      <a href="nabung-untung.html">Buka Kalkulator</a>
+    </article>
+
+    <article class="card" data-name="kalkulator giro prestige jasa giro bi-fast">
+      <div class="icon">🏦</div>
+      <span class="badge soon">Perlu parameter</span>
+      <h3>Kalkulator Giro Prestige</h3>
+      <p>Halaman sudah disiapkan. Tiering rate dan rumus benefit dapat dimasukkan setelah ketentuan final diberikan.</p>
+      <a href="giro-prestige.html">Buka Halaman</a>
+    </article>
+
+    <article class="card" data-name="kalkulator deposito signature spesial rate">
+      <div class="icon">📈</div>
+      <span class="badge soon">Segera hadir</span>
+      <h3>Kalkulator Deposito Signature</h3>
+      <p>Slot kalkulator tambahan untuk simulasi deposito, bunga, tenor, pajak, dan pencairan.</p>
+      <div class="disabled">Segera Hadir</div>
+    </article>
+  </section>
+</main>
+
+<footer>Portal simulasi internal. Hasil perhitungan harus mengacu pada ketentuan program yang berlaku.</footer>
+<script>
+  const input=document.getElementById('search');
+  const cards=[...document.querySelectorAll('.card')];
+  const count=document.getElementById('count');
+  input.addEventListener('input',()=>{
+    const q=input.value.toLowerCase().trim();
+    let shown=0;
+    cards.forEach(c=>{
+      const ok=c.dataset.name.includes(q);
+      c.style.display=ok?'flex':'none';
+      if(ok) shown++;
+    });
+    count.textContent=shown+' kalkulator';
+  });
+</script>
+</body>
+</html>
