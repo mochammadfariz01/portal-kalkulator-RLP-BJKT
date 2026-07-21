@@ -1,24 +1,409 @@
 <!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kalkulator Giro Prestige</title>
 <style>
-:root{font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;--o:#ff6a00;--n:#16235f;--m:#687386;--l:#e5e9f2}
-*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#202637}.wrap{width:min(760px,calc(100% - 28px));margin:28px auto}
-a{color:var(--n);font-weight:800;text-decoration:none}.card{margin-top:14px;background:#fff;border:1px solid var(--l);border-radius:20px;overflow:hidden;box-shadow:0 15px 40px rgba(25,37,80,.1)}
-.hero{padding:26px;background:linear-gradient(135deg,var(--o),#ff9a32);color:#fff}.hero h1{margin:0 0 8px}.hero p{margin:0;line-height:1.5}
-.content{padding:24px}.notice{border:1px dashed #f1a366;background:#fff8f2;border-radius:15px;padding:18px}.notice h2{margin:0 0 8px;color:var(--n);font-size:19px}.notice p{color:var(--m);line-height:1.6;margin:0}
-ul{line-height:1.7;color:var(--m)}code{background:#f1f3f7;padding:2px 5px;border-radius:5px}
-</style></head><body><main class="wrap">
-<a href="index.html">← Kembali ke daftar kalkulator</a>
-<section class="card"><div class="hero"><h1>Kalkulator Giro Prestige</h1><p>Struktur halaman telah tersedia dan siap dilengkapi.</p></div>
-<div class="content"><div class="notice"><h2>Parameter perhitungan belum dimasukkan</h2>
-<p>Agar hasil tidak keliru, kalkulator Giro Prestige perlu dilengkapi dengan ketentuan final berikut:</p></div>
-<ul>
-<li>Tier nominal atau saldo dan rate pada setiap tier.</li>
-<li>Dasar saldo: saldo akhir, saldo rata-rata, atau saldo terendah.</li>
-<li>Periode perhitungan benefit.</li>
-<li>Rumus jasa giro/cashback dan tarif pajak.</li>
-<li>Ketentuan benefit BI-FAST, bila ingin ikut ditampilkan.</li>
-</ul>
-<p>Setelah parameter diberikan, file ini dapat langsung diubah menjadi kalkulator aktif tanpa mengubah halaman utama.</p>
-</div></section></main></body></html>
+:root{
+  --orange:#ff6a00;
+  --orange2:#ff9a32;
+  --navy:#16235f;
+  --text:#202637;
+  --muted:#687386;
+  --line:#e4e9f2;
+  --bg:#f4f6fa;
+  --soft:#f9fafc;
+  --green:#18794e;
+  --purple:#6d37c7;
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text)}
+body{padding:26px 14px}
+.wrap{width:min(980px,100%);margin:auto}
+.back{
+  display:inline-flex;align-items:center;gap:7px;
+  margin-bottom:14px;color:var(--navy);font-weight:800;text-decoration:none
+}
+.shell{
+  overflow:hidden;background:#fff;border-radius:22px;
+  box-shadow:0 18px 55px rgba(25,37,80,.12)
+}
+.hero{
+  padding:30px;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff
+}
+.brand{
+  display:inline-flex;align-items:center;gap:9px;
+  font-size:13px;font-weight:800;margin-bottom:13px
+}
+.brand-icon{
+  width:32px;height:32px;border-radius:10px;background:#fff;color:var(--orange);
+  display:grid;place-items:center;font-size:17px
+}
+.hero h1{margin:0 0 9px;font-size:clamp(28px,5vw,41px);line-height:1.12}
+.hero p{margin:0;line-height:1.55;max-width:760px}
+.card{padding:25px}
+.grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px}
+.panel{border:1px solid var(--line);border-radius:17px;padding:20px;background:#fff}
+h2{margin:0 0 18px;color:var(--navy);font-size:20px}
+label{display:block;margin-bottom:8px;font-size:14px;font-weight:800;color:#1d2748}
+.field{position:relative}
+.prefix{
+  position:absolute;left:15px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-weight:900;font-size:17px
+}
+input[type=text],input[type=number]{
+  width:100%;height:54px;border:1px solid #cfd7e6;border-radius:12px;
+  font-size:18px;outline:none;color:var(--text);background:#fff
+}
+input[type=text]{padding:0 15px 0 47px}
+input[type=number]{padding:0 15px}
+input:focus{
+  border-color:var(--orange);
+  box-shadow:0 0 0 4px rgba(255,106,0,.11)
+}
+.hint{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.45}
+.days{margin-top:21px}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:10px}
+.quick button{
+  height:42px;border:1px solid #cfd7e6;border-radius:11px;background:#fff;
+  font-weight:800;color:var(--navy);cursor:pointer
+}
+.quick button:hover,.quick button.active{
+  border-color:var(--orange);background:#fff2e8;color:#d95700
+}
+.rate-box{
+  margin-top:20px;padding:15px;border:1px solid #ffd2b1;
+  border-radius:14px;background:#fff8f2
+}
+.rate-line{
+  display:flex;justify-content:space-between;gap:12px;
+  padding:7px 0;border-bottom:1px dashed #f0c7aa
+}
+.rate-line:last-child{border-bottom:0}
+.rate-line span{font-size:13px;color:var(--muted)}
+.rate-line strong{color:var(--navy)}
+.msg{min-height:20px;margin-top:12px;font-size:12px;font-weight:800;color:var(--green)}
+.compare-head{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px
+}
+.badge{
+  padding:12px;border-radius:13px;color:#fff;font-weight:900;text-align:center
+}
+.badge.counter{background:var(--navy)}
+.badge.prestige{background:var(--purple)}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.result{
+  padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--soft)
+}
+.result small{display:block;color:var(--muted);margin-bottom:5px;font-size:12px}
+.result strong{font-size:20px;color:var(--navy);word-break:break-word}
+.result.prestige{
+  background:#fbf8ff;border-color:#e3d8f7
+}
+.diff{
+  margin-top:13px;padding:16px;border-radius:15px;
+  background:linear-gradient(135deg,#fff3e8,#fffaf6);
+  border:1px solid #ffd3b2
+}
+.diff-title{font-size:13px;font-weight:900;color:#bd4b00;margin-bottom:10px}
+.diff-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+.diff-item{
+  padding:11px;border-radius:11px;background:#fff;border:1px solid #ffe0ca
+}
+.diff-item small{display:block;color:var(--muted);margin-bottom:4px;font-size:11px}
+.diff-item strong{color:#b64600;font-size:17px}
+details{
+  margin-top:18px;border:1px solid var(--line);border-radius:14px;overflow:hidden
+}
+summary{
+  cursor:pointer;padding:14px 16px;font-weight:900;color:var(--navy);background:#f8f9fc
+}
+.tiers{display:grid;grid-template-columns:1fr 1fr}
+.tier-col{padding:14px}
+.tier-col:first-child{border-right:1px solid var(--line)}
+.tier-col h3{margin:0 0 10px;font-size:14px;color:var(--navy)}
+.tier-row{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:8px 0;border-bottom:1px dashed var(--line);font-size:12px
+}
+.tier-row:last-child{border-bottom:0}
+.formula{
+  margin-top:18px;padding:14px 16px;border-radius:13px;
+  background:#f6f7fb;color:var(--muted);font-size:12px;line-height:1.55
+}
+.disclaimer{margin-top:12px;color:var(--muted);font-size:11px;line-height:1.5}
+@media(max-width:760px){
+  body{padding:14px 10px}
+  .hero{padding:24px 20px}
+  .card{padding:17px}
+  .grid{grid-template-columns:1fr}
+  .panel{padding:17px}
+}
+@media(max-width:520px){
+  .diff-grid{grid-template-columns:1fr}
+  .tiers{grid-template-columns:1fr}
+  .tier-col:first-child{border-right:0;border-bottom:1px solid var(--line)}
+}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="index.html">← Kembali ke daftar kalkulator</a>
+
+  <section class="shell">
+    <header class="hero">
+      <div class="brand"><span class="brand-icon">G</span> Giro Prestige</div>
+      <h1>Kalkulator Giro Prestige</h1>
+      <p>Hitung estimasi bunga harian Giro Prestige dan bandingkan otomatis dengan bunga counter rate.</p>
+    </header>
+
+    <section class="card">
+      <div class="grid">
+        <div class="panel">
+          <h2>Data Perhitungan</h2>
+
+          <label for="saldo">Saldo Harian</label>
+          <div class="field">
+            <span class="prefix">Rp</span>
+            <input id="saldo" type="text" inputmode="numeric" placeholder="1.000.000.000" autocomplete="off">
+          </div>
+          <div class="hint">Masukkan ending balance atau saldo harian yang akan dihitung.</div>
+
+          <div class="days">
+            <label for="jumlahHari">Jumlah Hari</label>
+            <input id="jumlahHari" type="number" min="1" max="366" value="1">
+            <div class="quick">
+              <button type="button" data-days="1" class="active">1 Hari</button>
+              <button type="button" data-days="7">7 Hari</button>
+              <button type="button" data-days="30">30 Hari</button>
+            </div>
+            <div class="hint">Gunakan 1 hari apabila saldo berubah setiap hari.</div>
+          </div>
+
+          <div class="rate-box">
+            <div class="rate-line">
+              <span>Counter Rate</span>
+              <strong id="counterRate">—</strong>
+            </div>
+            <div class="rate-line">
+              <span>Rate Giro Prestige</span>
+              <strong id="prestigeRate">—</strong>
+            </div>
+            <div class="rate-line">
+              <span>Selisih Rate</span>
+              <strong id="rateDiff">—</strong>
+            </div>
+          </div>
+
+          <div id="msg" class="msg"></div>
+        </div>
+
+        <div class="panel">
+          <h2>Hasil Perbandingan</h2>
+
+          <div class="compare-head">
+            <div class="badge counter">Counter Rate</div>
+            <div class="badge prestige">Giro Prestige</div>
+          </div>
+
+          <div class="results">
+            <div class="result">
+              <small>Bunga Bruto</small>
+              <strong id="counterGross">Rp0</strong>
+            </div>
+            <div class="result prestige">
+              <small>Bunga Bruto</small>
+              <strong id="prestigeGross">Rp0</strong>
+            </div>
+
+            <div class="result">
+              <small>Pajak 20%</small>
+              <strong id="counterTax">Rp0</strong>
+            </div>
+            <div class="result prestige">
+              <small>Pajak 20%</small>
+              <strong id="prestigeTax">Rp0</strong>
+            </div>
+
+            <div class="result">
+              <small>Bunga Bersih</small>
+              <strong id="counterNet">Rp0</strong>
+            </div>
+            <div class="result prestige">
+              <small>Bunga Bersih</small>
+              <strong id="prestigeNet">Rp0</strong>
+            </div>
+          </div>
+
+          <div class="diff">
+            <div class="diff-title">Tambahan Benefit Giro Prestige</div>
+            <div class="diff-grid">
+              <div class="diff-item">
+                <small>Selisih Bruto</small>
+                <strong id="diffGross">Rp0</strong>
+              </div>
+              <div class="diff-item">
+                <small>Selisih Pajak</small>
+                <strong id="diffTax">Rp0</strong>
+              </div>
+              <div class="diff-item">
+                <small>Selisih Bersih</small>
+                <strong id="diffNet">Rp0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <details>
+        <summary>Lihat tiering rate</summary>
+        <div class="tiers">
+          <div class="tier-col">
+            <h3>Counter Rate Giro Umum Perorangan</h3>
+            <div class="tier-row"><span>≤ Rp100 juta</span><strong>0,00%</strong></div>
+            <div class="tier-row"><span>&gt; Rp100 juta s.d. Rp1 miliar</span><strong>0,50%</strong></div>
+            <div class="tier-row"><span>&gt; Rp1 miliar s.d. Rp2,5 miliar</span><strong>0,75%</strong></div>
+            <div class="tier-row"><span>&gt; Rp2,5 miliar s.d. Rp5 miliar</span><strong>1,00%</strong></div>
+            <div class="tier-row"><span>&gt; Rp5 miliar</span><strong>1,25%</strong></div>
+          </div>
+          <div class="tier-col">
+            <h3>Rate Giro Prestige</h3>
+            <div class="tier-row"><span>≤ Rp100 juta</span><strong>0,00%</strong></div>
+            <div class="tier-row"><span>&gt; Rp100 juta s.d. Rp1 miliar</span><strong>0,50%</strong></div>
+            <div class="tier-row"><span>&gt; Rp1 miliar s.d. Rp2 miliar</span><strong>0,75%</strong></div>
+            <div class="tier-row"><span>&gt; Rp2 miliar s.d. Rp5 miliar</span><strong>3,50%</strong></div>
+            <div class="tier-row"><span>&gt; Rp5 miliar s.d. Rp10 miliar</span><strong>4,00%</strong></div>
+            <div class="tier-row"><span>&gt; Rp10 miliar</span><strong>6,00%</strong></div>
+          </div>
+        </div>
+      </details>
+
+      <div class="formula">
+        Rumus bunga bruto: saldo harian × rate p.a. × jumlah hari/365.
+        Pajak bunga dihitung sebesar 20% dari bunga bruto.
+      </div>
+      <div class="disclaimer">
+        Simulasi ini menggunakan saldo yang sama selama jumlah hari yang dipilih. Jika saldo berubah setiap hari, lakukan perhitungan per saldo harian. Hasil akhir tetap mengacu pada ketentuan resmi program.
+      </div>
+    </section>
+  </section>
+</main>
+
+<script>
+const saldoInput = document.getElementById('saldo');
+const daysInput = document.getElementById('jumlahHari');
+const msg = document.getElementById('msg');
+
+const idr = new Intl.NumberFormat('id-ID', {
+  style:'currency',
+  currency:'IDR',
+  maximumFractionDigits:0
+});
+const numberID = new Intl.NumberFormat('id-ID');
+const pct = new Intl.NumberFormat('id-ID', {
+  minimumFractionDigits:2,
+  maximumFractionDigits:2
+});
+
+function getCounterRate(saldo){
+  if(saldo <= 100000000) return 0;
+  if(saldo <= 1000000000) return 0.50;
+  if(saldo <= 2500000000) return 0.75;
+  if(saldo <= 5000000000) return 1.00;
+  return 1.25;
+}
+
+function getPrestigeRate(saldo){
+  if(saldo <= 100000000) return 0;
+  if(saldo <= 1000000000) return 0.50;
+  if(saldo <= 2000000000) return 0.75;
+  if(saldo <= 5000000000) return 3.50;
+  if(saldo <= 10000000000) return 4.00;
+  return 6.00;
+}
+
+function money(value){
+  return idr.format(Math.round(value));
+}
+
+function setText(id,value){
+  document.getElementById(id).textContent = value;
+}
+
+function reset(){
+  ['counterGross','prestigeGross','counterTax','prestigeTax',
+   'counterNet','prestigeNet','diffGross','diffTax','diffNet']
+   .forEach(id => setText(id,'Rp0'));
+  setText('counterRate','—');
+  setText('prestigeRate','—');
+  setText('rateDiff','—');
+}
+
+function render(){
+  const raw = saldoInput.value.replace(/\D/g,'');
+  const saldo = Number(raw || 0);
+  saldoInput.value = raw ? numberID.format(saldo) : '';
+
+  let days = Number(daysInput.value || 1);
+  if(days < 1) days = 1;
+  if(days > 366) days = 366;
+  daysInput.value = days;
+
+  document.querySelectorAll('.quick button').forEach(btn => {
+    btn.classList.toggle('active', Number(btn.dataset.days) === days);
+  });
+
+  if(!raw){
+    reset();
+    msg.textContent = '';
+    return;
+  }
+
+  const counterRate = getCounterRate(saldo);
+  const prestigeRate = getPrestigeRate(saldo);
+
+  const counterGross = saldo * (counterRate/100) * (days/365);
+  const prestigeGross = saldo * (prestigeRate/100) * (days/365);
+
+  const counterTax = counterGross * 0.20;
+  const prestigeTax = prestigeGross * 0.20;
+
+  const counterNet = counterGross - counterTax;
+  const prestigeNet = prestigeGross - prestigeTax;
+
+  setText('counterRate', pct.format(counterRate) + '%');
+  setText('prestigeRate', pct.format(prestigeRate) + '%');
+  setText('rateDiff', pct.format(prestigeRate-counterRate) + '%');
+
+  setText('counterGross', money(counterGross));
+  setText('prestigeGross', money(prestigeGross));
+  setText('counterTax', money(counterTax));
+  setText('prestigeTax', money(prestigeTax));
+  setText('counterNet', money(counterNet));
+  setText('prestigeNet', money(prestigeNet));
+
+  setText('diffGross', money(prestigeGross-counterGross));
+  setText('diffTax', money(prestigeTax-counterTax));
+  setText('diffNet', money(prestigeNet-counterNet));
+
+  msg.textContent = 'Simulasi berhasil dihitung.';
+}
+
+saldoInput.addEventListener('input',render);
+daysInput.addEventListener('input',render);
+
+document.querySelectorAll('.quick button').forEach(btn => {
+  btn.addEventListener('click',() => {
+    daysInput.value = btn.dataset.days;
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>
